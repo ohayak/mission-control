@@ -55,6 +55,8 @@ const navGroups: NavGroup[] = [
     id: 'admin',
     label: 'ADMIN',
     items: [
+      { id: 'approvals', label: 'Approvals', icon: <ApprovalsIcon />, priority: false },
+      { id: 'knowledge', label: 'Knowledge', icon: <KnowledgeIcon />, priority: false },
       { id: 'users', label: 'Users', icon: <UsersIcon />, priority: false },
       { id: 'audit', label: 'Audit', icon: <AuditIcon />, priority: false },
       { id: 'history', label: 'History', icon: <HistoryIcon />, priority: false },
@@ -634,6 +636,24 @@ function OfficeIcon() {
       <path d="M5 1v3M11 1v3" />
       <rect x="4" y="9" width="3" height="3" rx="0.5" />
       <rect x="9" y="9" width="3" height="3" rx="0.5" />
+    </svg>
+  )
+}
+
+function ApprovalsIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 1L2 4v4c0 4 2.5 6 6 7 3.5-1 6-3 6-7V4L8 1z" />
+      <path d="M5.5 8l2 2 3-3" />
+    </svg>
+  )
+}
+
+function KnowledgeIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="1" width="12" height="14" rx="1.5" />
+      <path d="M5 5h6M5 8h6M5 11h3" />
     </svg>
   )
 }

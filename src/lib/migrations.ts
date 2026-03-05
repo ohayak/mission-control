@@ -775,6 +775,36 @@ const migrations: Migration[] = [
     }
   },
   {
+    id: '027_approvals',
+    up: (db) => {
+      // Approvals table — stores pending/resolved human approval requests
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS approvals (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          workspace_id INTEGER NOT NULL DEFAULT 1,
+          task_id INTEGER,
+          agent_name TEXT,
+          action_type TEXT NOT NULL,
+          reason TEXT NOT NULL,
+          payload TEXT,
+          confidence INTEGER NOT NULL DEFAULT 50 CHECK (confidence >= 0 AND confidence <= 100),
+          status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+          resolved_by TEXT,
+          resolution_note TEXT,
+          created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+          resolved_at INTEGER,
+          FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE SET NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_approvals_workspace_id ON approvals(workspace_id);
+        CREATE INDEX IF NOT EXISTS idx_approvals_status ON approvals(status);
+        CREATE INDEX IF NOT EXISTS idx_approvals_task_id ON approvals(task_id);
+        CREATE INDEX IF NOT EXISTS idx_approvals_created_at ON approvals(created_at);
+        CREATE INDEX IF NOT EXISTS idx_approvals_workspace_status ON approvals(workspace_id, status);
+      `)
+    }
+  },
+  {
     id: '026_task_outcome_tracking',
     up: (db) => {
       const hasTasks = db

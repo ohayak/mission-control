@@ -32,6 +32,8 @@ import { MultiGatewayPanel } from '@/components/panels/multi-gateway-panel'
 import { SuperAdminPanel } from '@/components/panels/super-admin-panel'
 import { OfficePanel } from '@/components/panels/office-panel'
 import { GitHubSyncPanel } from '@/components/panels/github-sync-panel'
+import { ApprovalQueuePanel } from '@/components/panels/approval-queue-panel'
+import { ProjectKnowledgePanel } from '@/components/panels/project-knowledge-panel'
 import { ChatPanel } from '@/components/chat/chat-panel'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LocalModeBanner } from '@/components/layout/local-mode-banner'
@@ -264,6 +266,10 @@ function ContentRouter({ tab }: { tab: string }) {
       return <SettingsPanel />
     case 'github':
       return <GitHubSyncPanel />
+    case 'approvals':
+      return <ApprovalQueuePanel />
+    case 'knowledge':
+      return <ProjectKnowledgePanel workspaceId="1" />
     case 'office':
       return <OfficePanel />
     case 'super-admin':
