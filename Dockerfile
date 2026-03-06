@@ -28,9 +28,10 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 # Copy schema.sql needed by migration 001_init at runtime
 COPY --from=build /app/src/lib/schema.sql ./src/lib/schema.sql
-# Create data directory with correct ownership for SQLite
-RUN mkdir -p .data && chown nextjs:nodejs .data
-RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+# Fix ownership (SQLite data dir + Next.js cache) and install healthcheck deps in one layer
+RUN mkdir -p .data \
+    && chown -R nextjs:nodejs .data .next \
+    && apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
 USER nextjs
 ENV PORT=3000
 EXPOSE 3000
