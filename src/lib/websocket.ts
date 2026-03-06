@@ -4,6 +4,7 @@ import { useCallback, useRef, useEffect } from 'react'
 import { useMissionControl } from '@/store'
 import { normalizeModel } from '@/lib/utils'
 import { buildGatewayWebSocketUrl } from '@/lib/gateway-url'
+import { getRuntimeConfig } from '@/lib/runtime-config'
 import {
   getOrCreateDeviceIdentity,
   signPayload,
@@ -17,7 +18,7 @@ const log = createClientLogger('WebSocket')
 
 // Gateway protocol version (v3 required by OpenClaw 2026.x)
 const PROTOCOL_VERSION = 3
-const DEFAULT_GATEWAY_CLIENT_ID = process.env.NEXT_PUBLIC_GATEWAY_CLIENT_ID || 'openclaw-control-ui'
+const DEFAULT_GATEWAY_CLIENT_ID = getRuntimeConfig().GATEWAY_CLIENT_ID
 
 // Heartbeat configuration
 const PING_INTERVAL_MS = 30_000
@@ -508,9 +509,10 @@ export function useWebSocket() {
   ])
 
   const normalizeWebSocketUrl = useCallback((rawUrl: string): string => {
+    const cfg = getRuntimeConfig()
     const built = buildGatewayWebSocketUrl({
       host: rawUrl,
-      port: Number(process.env.NEXT_PUBLIC_GATEWAY_PORT || '18789'),
+      port: Number(cfg.GATEWAY_PORT || '18789'),
       browserProtocol: window.location.protocol,
     })
 

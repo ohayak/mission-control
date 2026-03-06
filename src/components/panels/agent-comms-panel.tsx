@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSmartPoll } from '@/lib/use-smart-poll'
 import { useMissionControl } from '@/store'
+import { getRuntimeConfig } from '@/lib/runtime-config'
 
-const COORDINATOR_AGENT = (process.env.NEXT_PUBLIC_COORDINATOR_AGENT || 'coordinator').toLowerCase()
+const COORDINATOR_AGENT = getRuntimeConfig().COORDINATOR_AGENT
 
 interface CommsMessage {
   id: number

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { useRuntimeConfig } from '@/lib/runtime-config'
 
 declare global {
   interface Window {
@@ -17,8 +18,9 @@ export default function LoginPage() {
   const [googleReady, setGoogleReady] = useState(false)
   const router = useRouter()
   const googleBtnRef = useRef<HTMLDivElement | null>(null)
+  const { config: runtimeConfig } = useRuntimeConfig()
 
-  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
+  const googleClientId = runtimeConfig.GOOGLE_CLIENT_ID
 
   const completeLogin = useCallback(async (path: string, body: any) => {
     const res = await fetch(path, {

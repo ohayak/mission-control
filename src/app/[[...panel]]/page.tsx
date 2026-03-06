@@ -42,6 +42,7 @@ import { PromoBanner } from '@/components/layout/promo-banner'
 import { useWebSocket } from '@/lib/websocket'
 import { useServerEvents } from '@/lib/use-server-events'
 import { useMissionControl } from '@/store'
+import { fetchRuntimeConfig } from '@/lib/runtime-config'
 
 export default function Home() {
   const router = useRouter()
@@ -107,27 +108,31 @@ export default function Home() {
           setGatewayAvailable(true)
         }
         // Connect to gateway WebSocket
-        const wsToken = process.env.NEXT_PUBLIC_GATEWAY_TOKEN || process.env.NEXT_PUBLIC_WS_TOKEN || ''
-        const explicitWsUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || ''
-        const gatewayPort = process.env.NEXT_PUBLIC_GATEWAY_PORT || '18789'
-        const gatewayHost = process.env.NEXT_PUBLIC_GATEWAY_HOST || window.location.hostname
-        const gatewayProto =
-          process.env.NEXT_PUBLIC_GATEWAY_PROTOCOL ||
-          (window.location.protocol === 'https:' ? 'wss' : 'ws')
-        const wsUrl = explicitWsUrl || `${gatewayProto}://${gatewayHost}:${gatewayPort}`
-        connect(wsUrl, wsToken)
+        fetchRuntimeConfig().then(cfg => {
+          const wsToken = cfg.GATEWAY_TOKEN
+          const explicitWsUrl = cfg.GATEWAY_URL
+          const gatewayPort = cfg.GATEWAY_PORT
+          const gatewayHost = cfg.GATEWAY_HOST || window.location.hostname
+          const gatewayProto =
+            cfg.GATEWAY_PROTOCOL ||
+            (window.location.protocol === 'https:' ? 'wss' : 'ws')
+          const wsUrl = explicitWsUrl || `${gatewayProto}://${gatewayHost}:${gatewayPort}`
+          connect(wsUrl, wsToken)
+        })
       })
       .catch(() => {
         // If capabilities check fails, still try to connect
-        const wsToken = process.env.NEXT_PUBLIC_GATEWAY_TOKEN || process.env.NEXT_PUBLIC_WS_TOKEN || ''
-        const explicitWsUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || ''
-        const gatewayPort = process.env.NEXT_PUBLIC_GATEWAY_PORT || '18789'
-        const gatewayHost = process.env.NEXT_PUBLIC_GATEWAY_HOST || window.location.hostname
-        const gatewayProto =
-          process.env.NEXT_PUBLIC_GATEWAY_PROTOCOL ||
-          (window.location.protocol === 'https:' ? 'wss' : 'ws')
-        const wsUrl = explicitWsUrl || `${gatewayProto}://${gatewayHost}:${gatewayPort}`
-        connect(wsUrl, wsToken)
+        fetchRuntimeConfig().then(cfg => {
+          const wsToken = cfg.GATEWAY_TOKEN
+          const explicitWsUrl = cfg.GATEWAY_URL
+          const gatewayPort = cfg.GATEWAY_PORT
+          const gatewayHost = cfg.GATEWAY_HOST || window.location.hostname
+          const gatewayProto =
+            cfg.GATEWAY_PROTOCOL ||
+            (window.location.protocol === 'https:' ? 'wss' : 'ws')
+          const wsUrl = explicitWsUrl || `${gatewayProto}://${gatewayHost}:${gatewayPort}`
+          connect(wsUrl, wsToken)
+        })
       })
   }, [connect, pathname, router, setCurrentUser, setDashboardMode, setGatewayAvailable, setSubscription, setUpdateAvailable])
 
