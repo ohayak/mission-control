@@ -63,6 +63,8 @@ export async function fetchRuntimeConfig(): Promise<RuntimeConfig> {
       if (!res.ok) throw new Error(`Config fetch failed: ${res.status}`)
       const data = await res.json()
       const resolved: RuntimeConfig = { ...BUILD_TIME_DEFAULTS, ...data }
+      // GATEWAY_TOKEN may be omitted by server if not authenticated
+      if (!('GATEWAY_TOKEN' in data)) resolved.GATEWAY_TOKEN = BUILD_TIME_DEFAULTS.GATEWAY_TOKEN
       cachedConfig = resolved
       return resolved
     } catch {
