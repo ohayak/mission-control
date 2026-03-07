@@ -28,14 +28,18 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 # Copy schema.sql needed by migration 001_init at runtime
 COPY --from=build /app/src/lib/schema.sql ./src/lib/schema.sql
-# Fix ownership (SQLite data dir + Next.js cache) and install healthcheck deps in one layer
+# Fix ownership (SQLite data dir + Next.js cache) and install healthcheck deps + gosu in one layer
 RUN mkdir -p .data \
     && chown -R nextjs:nodejs .data .next \
-    && apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
-USER nextjs
+    && apt-get update && apt-get install -y curl gosu --no-install-recommends && rm -rf /var/lib/apt/lists/*
+# Entrypoint: runs as root, chowns the volume-mounted .data dir, then drops to nextjs
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+# Do NOT set USER here — entrypoint starts as root to chown, then drops to nextjs
 ENV PORT=3000
 EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT:-3000}/login || exit 1
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["node", "server.js"]
