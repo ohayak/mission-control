@@ -34,6 +34,7 @@ import { OfficePanel } from '@/components/panels/office-panel'
 import { GitHubSyncPanel } from '@/components/panels/github-sync-panel'
 import { ApprovalQueuePanel } from '@/components/panels/approval-queue-panel'
 import { ProjectKnowledgePanel } from '@/components/panels/project-knowledge-panel'
+import { DocumentsPanel } from '@/components/panels/documents-panel'
 import { ChatPanel } from '@/components/chat/chat-panel'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { LocalModeBanner } from '@/components/layout/local-mode-banner'
@@ -277,6 +278,8 @@ function ContentRouter({ tab }: { tab: string }) {
       return <ProjectKnowledgePanel workspaceId="1" />
     case 'office':
       return <OfficePanel />
+    case 'documents':
+      return <DocumentsPanel />
     case 'super-admin':
       return <SuperAdminPanel />
     case 'workspaces':
